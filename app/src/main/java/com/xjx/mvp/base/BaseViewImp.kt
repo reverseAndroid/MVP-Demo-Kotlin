@@ -1,6 +1,8 @@
 package com.xjx.mvp.base
 
-interface BaseViewImp<A> {
+import android.app.Activity
 
-    fun getCurrentActivity(): A
+interface BaseViewImp {
+
+    fun getCurrentActivity(): Activity
 }

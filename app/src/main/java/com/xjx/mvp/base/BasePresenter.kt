@@ -1,11 +1,13 @@
 package com.xjx.mvp.base
 
-abstract class BasePresenter<A, V> {
+abstract class BasePresenter<M, A, V> {
 
+    var mModel: M? = null
     var mActivity: A? = null
     var mView: V? = null
 
-    fun attachView(activity: A, view: V) {
+    fun attachView(model: M, activity: A, view: V) {
+        mModel = model
         mView = view
         mActivity = activity
         initTitle()

@@ -1,24 +1,26 @@
 package com.xjx.mvp.base
 
-import android.app.Activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.xjx.mvp.App
-import com.xjx.mvp.utils.Retrofit.ApiRetrofit
 
-abstract class BaseActivity<A, V, P : BasePresenter<A, V>> : AppCompatActivity(), BaseViewImp<A> {
+abstract class BaseActivity<M, A, V, P : BasePresenter<M, A, V>> : AppCompatActivity(), BaseViewImp {
 
+    var mModel: M? = null
     var mPresenter: P? = null
     var mActivity: A? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(initContentView())
-        mActivity = getCurrentActivity()
-        App.mActivityList.add(mActivity as Activity)
+        mModel = initModel()
+        mActivity = getCurrentActivity() as A
+        App.mActivityList.add(getCurrentActivity())
         mPresenter = initPresenter()
-        mPresenter?.attachView(mActivity as A, this as V)
+        mPresenter?.attachView(mModel as M, mActivity as A, this as V)
     }
+
+    protected abstract fun initModel(): M
 
     protected abstract fun initContentView(): Int
 
@@ -26,7 +28,13 @@ abstract class BaseActivity<A, V, P : BasePresenter<A, V>> : AppCompatActivity()
 
     override fun onDestroy() {
         super.onDestroy()
-        App.mActivityList.remove(mActivity as Activity)
+        for (i in App.mActivityList.indices) {
+            if (App.mActivityList[i].javaClass.name == mActivity!!.javaClass.name) {
+                App.mActivityList.removeAt(i)
+                break
+            }
+        }
+
         mPresenter?.detachView()
         mPresenter = null
     }

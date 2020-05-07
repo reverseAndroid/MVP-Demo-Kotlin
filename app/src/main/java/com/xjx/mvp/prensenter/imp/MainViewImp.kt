@@ -4,7 +4,7 @@ import android.widget.TextView
 import com.xjx.mvp.view.MainActivity
 import com.xjx.mvp.base.BaseViewImp
 
-interface MainViewImp : BaseViewImp<MainActivity> {
+interface MainViewImp : BaseViewImp {
 
     fun getTextView(): TextView
 }
