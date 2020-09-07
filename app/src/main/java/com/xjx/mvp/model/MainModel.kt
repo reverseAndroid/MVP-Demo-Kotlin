@@ -12,7 +12,7 @@ import rx.schedulers.Schedulers
 class MainModel : BaseModel<MainCallBack>() {
 
     fun setBaidu(user: UserRequest?) {
-        ApiRetrofit.login(user)
+        ApiRetrofit.getApiRetrofit().login(user)
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(

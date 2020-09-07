@@ -14,22 +14,26 @@ import retrofit2.http.Multipart
 import rx.Observable
 
 
-object ApiRetrofit : BaseApiRetrofit() {
+class ApiRetrofit : BaseApiRetrofit() {
 
-    var mApi: Api? = null
-    fun ApiRetrofit() {
-        val gson = GsonBuilder().setLenient().create()
-        //在构造方法中完成对Retrofit接口的初始化
-        mApi = Retrofit.Builder()
-            .baseUrl(Constant.BASE_URL)
-            .client(getClient())
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            //针对返回值是字符串不是json的工厂模式
-//                .addConverterFactory(ScalarsConverterFactory.create())
-            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-            .build()
-            .create(Api::class.java)
+    companion object {
+        fun getApiRetrofit(): ApiRetrofit {
+            return ApiRetrofit()
+        }
     }
+
+    private val gson = GsonBuilder().setLenient().create()
+
+    private var retrofit = Retrofit.Builder()
+        .baseUrl(Constant.BASE_URL)
+        .client(getClient())
+        .addConverterFactory(GsonConverterFactory.create(gson))
+        //针对返回值是字符串不是json的工厂模式
+//                .addConverterFactory(ScalarsConverterFactory.create())
+        .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+        .build()
+
+    private var mApi = retrofit.create(Api::class.java)
 
     @Multipart
     private fun getRequestBody(obj: Any): RequestBody? {
@@ -39,7 +43,6 @@ object ApiRetrofit : BaseApiRetrofit() {
 
     //登录
     fun login(user: UserRequest?): Observable<UserResponse?>? {
-        ApiRetrofit()
         return mApi?.login(user)
     }
 }
